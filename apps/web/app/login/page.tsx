@@ -82,5 +82,17 @@ export default function LoginPage() {
           )}
 
           <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: "100%" }}>
-            {loading ? "Signi
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
 
+        <p style={{ marginTop: 24, textAlign: "center", color: "var(--ink-dim)", fontSize: 14 }}>
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" style={{ color: "var(--electric)", fontWeight: 600 }}>
+            Create one
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}
