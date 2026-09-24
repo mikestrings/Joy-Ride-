@@ -15,8 +15,6 @@
   --ink-dim: #8fa3bf;
   --border-glow: rgba(0, 191, 255, 0.25);
 
-  --font-display: var(--font-display), system-ui, sans-serif;
-  --font-body: var(--font-body), system-ui, sans-serif;
 }
 
 html,
