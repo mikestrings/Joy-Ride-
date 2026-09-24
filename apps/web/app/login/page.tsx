@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { createClient } from "../lib/supabase/client";
 
 export default function LoginPage() {
@@ -20,11 +21,10 @@ export default function LoginPage() {
     setLoading(true);
     setMessage("");
 
-    const { error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       setMessage(error.message);
@@ -36,22 +36,21 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="auth-page">
-      <div className="auth-card">
-        <a href="/" className="brand">
-          JOY RIDE
-        </a>
+    <main className="page" style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div className="glass" style={{ width: "100%", maxWidth: 440, padding: 44 }}>
+        <Link href="/" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, letterSpacing: "0.02em" }}>
+          Joy Ride
+        </Link>
 
-        <h1>Welcome back</h1>
+        <h1 style={{ fontSize: 34, margin: "28px 0 8px" }}>Welcome back</h1>
 
-        <p>
+        <p style={{ color: "var(--ink-dim)", marginBottom: 32 }}>
           Sign in to continue your journey.
         </p>
 
-        <form onSubmit={handleLogin}>
-          <label>
-            Email
-
+        <form onSubmit={handleLogin} style={{ display: "grid", gap: 20 }}>
+          <div className="field">
+            <label>Email</label>
             <input
               type="email"
               value={email}
@@ -61,11 +60,10 @@ export default function LoginPage() {
               placeholder="you@example.com"
               required
             />
-          </label>
+          </div>
 
-          <label>
-            Password
-
+          <div className="field">
+            <label>Password</label>
             <input
               type="password"
               value={password}
@@ -75,122 +73,14 @@ export default function LoginPage() {
               placeholder="Your password"
               required
             />
-          </label>
+          </div>
 
           {message && (
-            <div className="error">
+            <div style={{ padding: 12, borderRadius: 10, background: "rgba(255,80,80,0.1)", border: "1px solid rgba(255,80,80,0.3)", color: "#ff9d9d", fontSize: 14 }}>
               {message}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
+          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: "100%" }}>
+            {loading ? "Signi
 
-        <p className="switch">
-          Don't have an account?{" "}
-          <a href="/signup">
-            Create one
-          </a>
-        </p>
-      </div>
-
-      <style jsx>{`
-        .auth-page {
-          min-height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 30px;
-          background: #0b172a;
-        }
-
-        .auth-card {
-          width: 100%;
-          max-width: 450px;
-          padding: 40px;
-          border-radius: 24px;
-          background: white;
-        }
-
-        .brand {
-          display: inline-block;
-          margin-bottom: 45px;
-          color: #0b172a;
-          text-decoration: none;
-          font-weight: 900;
-          letter-spacing: 2px;
-        }
-
-        h1 {
-          font-size: 40px;
-          margin-bottom: 10px;
-        }
-
-        .auth-card > p {
-          color: #64748b;
-          margin-bottom: 30px;
-        }
-
-        form {
-          display: grid;
-          gap: 20px;
-        }
-
-        label {
-          display: grid;
-          gap: 8px;
-          font-weight: 700;
-        }
-
-        input {
-          width: 100%;
-          padding: 14px;
-          border: 1px solid #cbd5e1;
-          border-radius: 10px;
-          outline: none;
-        }
-
-        input:focus {
-          border-color: #0b172a;
-        }
-
-        button {
-          padding: 15px;
-          border: 0;
-          border-radius: 10px;
-          background: #0b172a;
-          color: white;
-          font-weight: 800;
-        }
-
-        button:disabled {
-          opacity: 0.6;
-        }
-
-        .error {
-          padding: 12px;
-          border-radius: 8px;
-          background: #fee2e2;
-          color: #991b1b;
-          font-size: 14px;
-        }
-
-        .switch {
-          margin-top: 25px;
-          text-align: center;
-          color: #64748b;
-        }
-
-        .switch a {
-          color: #0b172a;
-          font-weight: 800;
-        }
-      `}</style>
-    </main>
-  );
-          }
