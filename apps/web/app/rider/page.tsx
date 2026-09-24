@@ -203,12 +203,12 @@ export default function RiderDashboard() {
 
       <section className="container" style={{ padding: "0 24px 80px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 15 }}>
         {[
-          { icon: "💰", title: "Wallet", body: "Ride credits & points" },
-          { icon: "🎬", title: "Watch & Ride", body: "Earn rewards from ads" },
-          { icon: "🎫", title: "Ride Passes", body: "Save with subscriptions" },
-          { icon: "🚲", title: "My Rides", body: "View ride history" },
+          { icon: "💰", title: "Wallet", body: "Ride credits & points", href: "#" },
+          { icon: "🎬", title: "Watch & Ride", body: "Earn rewards from ads", href: "/watch-ride" },
+          { icon: "🎫", title: "Ride Passes", body: "Save with subscriptions", href: "#" },
+          { icon: "🚲", title: "My Rides", body: "View ride history", href: "#" },
         ].map((f) => (
-          <a key={f.title} href="#" className="glass" style={{ display: "block", padding: 22 }}>
+          <a key={f.title} href={f.href} className="glass" style={{ display: "block", padding: 22 }}>
             <span style={{ fontSize: 25, marginBottom: 15, display: "block" }}>{f.icon}</span>
             <strong style={{ display: "block" }}>{f.title}</strong>
             <small style={{ color: "var(--ink-dim)" }}>{f.body}</small>
