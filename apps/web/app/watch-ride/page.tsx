@@ -8,6 +8,7 @@ const POINTS_PER_AD = 1;
 const POINTS_FOR_RIDE_CREDIT = 10;
 const POINTS_FOR_FREE_RIDE = 100;
 const POINTS_FOR_FOOD_REWARD = 500;
+const MIN_WITHDRAWAL_KOBO = 50000;
 
 type FoodReward = {
   id: string;
@@ -26,6 +27,11 @@ export default function WatchAndRidePage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
+
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -167,6 +173,59 @@ export default function WatchAndRidePage() {
     setBusy(false);
   }
 
+  async function requestWithdrawal() {
+    if (!userId) return;
+
+    const amountKobo = Math.round(parseFloat(withdrawAmount || "0") * 100);
+
+    if (!bankName || !accountNumber || !accountName) {
+      setMessage("Please fill in your bank details.");
+      return;
+    }
+
+    if (amountKobo < MIN_WITHDRAWAL_KOBO) {
+      setMessage("Minimum withdrawal is ₦500.");
+      return;
+    }
+
+    if (amountKobo > rideCreditKobo) {
+      setMessage("You don't have enough ride credit for this withdrawal.");
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+
+    const newCredit = rideCreditKobo - amountKobo;
+
+    await supabase
+      .from("wallets")
+      .update({ ride_credit_kobo: newCredit })
+      .eq("user_id", userId);
+
+    await supabase.from("withdrawal_requests").insert({
+      user_id: userId,
+      amount_kobo: amountKobo,
+      bank_name: bankName,
+      account_number: accountNumber,
+      account_name: accountName,
+    });
+
+    await supabase.from("wallet_transactions").insert({
+      user_id: userId,
+      amount_kobo: -amountKobo,
+      transaction_type: "withdrawal_request",
+    });
+
+    setRideCreditKobo(newCredit);
+    setBankName("");
+    setAccountNumber("");
+    setAccountName("");
+    setWithdrawAmount("");
+    setMessage("Withdrawal request submitted. We'll process it within 24-48 hours.");
+    setBusy(false);
+  }
+
   if (loading) {
     return (
       <main className="page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
@@ -191,7 +250,7 @@ export default function WatchAndRidePage() {
           Earn while you ride
         </h1>
         <p style={{ color: "var(--ink-dim)", fontSize: 17 }}>
-          Watch ads to earn points, then redeem them for ride credit or food rewards.
+          Watch ads to earn points, then redeem them for ride credit, food, or cash.
         </p>
       </section>
 
@@ -240,6 +299,59 @@ export default function WatchAndRidePage() {
               Redeem
             </button>
           </div>
+        </div>
+      </section>
+
+      <section className="container glass" style={{ padding: 32, marginBottom: 40 }}>
+        <h2 style={{ fontSize: 19, marginBottom: 8 }}>Withdraw as cash</h2>
+        <p style={{ color: "var(--ink-dim)", marginBottom: 20 }}>
+          Cash out your ride credit balance to your bank account. Minimum ₦500, processed within 24-48 hours.
+        </p>
+
+        <div style={{ display: "grid", gap: 16, maxWidth: 420 }}>
+          <div className="field">
+            <label>Bank name</label>
+            <input
+              type="text"
+              value={bankName}
+              onChange={(event) => setBankName(event.target.value)}
+              placeholder="e.g. GTBank"
+            />
+          </div>
+
+          <div className="field">
+            <label>Account number</label>
+            <input
+              type="text"
+              value={accountNumber}
+              onChange={(event) => setAccountNumber(event.target.value)}
+              placeholder="10-digit account number"
+            />
+          </div>
+
+          <div className="field">
+            <label>Account name</label>
+            <input
+              type="text"
+              value={accountName}
+              onChange={(event) => setAccountName(event.target.value)}
+              placeholder="Name on the account"
+            />
+          </div>
+
+          <div className="field">
+            <label>Amount (₦)</label>
+            <input
+              type="number"
+              value={withdrawAmount}
+              onChange={(event) => setWithdrawAmount(event.target.value)}
+              placeholder={`Available: ₦${(rideCreditKobo / 100).toFixed(0)}`}
+            />
+          </div>
+
+          <button className="btn btn-primary" onClick={requestWithdrawal} disabled={busy || rideCreditKobo < MIN_WITHDRAWAL_KOBO}>
+            {busy ? "Processing..." : "Request withdrawal"}
+          </button>
         </div>
       </section>
 
