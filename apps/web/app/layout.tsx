@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -15,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Joy Ride — Move Smarter. Ride Better.",
+  title: "Joy Ride - Move Smarter. Ride Better.",
   description:
     "Hyper-local mobility and rewards for students and commuters in Ile-Ife.",
 };
@@ -26,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <Script src="https://quge5.com/88/tag.min.js" data-zone="286564" strategy="afterInteractive" />
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Script src="https://quge5.com/88/tag.min.js" data-zone="286564" strategy="afterInteractive" />
+        {children}
+      </body>
     </html>
-    </>
   );
 }
