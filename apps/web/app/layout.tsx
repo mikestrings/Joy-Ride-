@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -28,10 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-      <body>
-        <Script src="https://quge5.com/88/tag.min.js" data-zone="286564" strategy="afterInteractive" />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
