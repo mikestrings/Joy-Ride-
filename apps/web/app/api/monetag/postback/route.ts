@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createJoyWalletAdmin } from "@/app/lib/joy-wallet/supabase-admin";
+import { createJoyWalletAdmin } from "../../../lib/joy-wallet/supabase-admin";
 
 export async function GET(request: NextRequest) {
   const p = request.nextUrl.searchParams;
