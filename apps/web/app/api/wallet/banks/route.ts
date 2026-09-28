@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateTelegramInitData } from "../../../../lib/joy-wallet/telegram";
+import { validateTelegramInitData } from "../../../lib/joy-wallet/telegram";
 
 export async function POST(request: NextRequest) {
   try {
