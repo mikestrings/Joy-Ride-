@@ -63,6 +63,7 @@ export default function WalletClient({
   const [data, setData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(true);
   const [watching, setWatching] = useState(false);
+  const [monetagReady, setMonetagReady] = useState(false);
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"home" | "withdraw" | "history">("home");
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -80,6 +81,34 @@ export default function WalletClient({
   }, []);
 
   const initData = tg?.initData ?? "";
+
+  useEffect(() => {
+    if (!monetagConfigured || !monetagFunction) {
+      setMonetagReady(false);
+      return;
+    }
+
+    let attempts = 0;
+
+    const checkMonetag = () => {
+      const fn = (window as unknown as Record<string, unknown>)[monetagFunction];
+
+      if (typeof fn === "function") {
+        setMonetagReady(true);
+        return;
+      }
+
+      attempts += 1;
+
+      if (attempts < 40) {
+        window.setTimeout(checkMonetag, 500);
+      } else {
+        setMonetagReady(false);
+      }
+    };
+
+    checkMonetag();
+  }, [monetagConfigured, monetagFunction]);
 
   const loadWallet = useCallback(async () => {
     if (!initData) {
@@ -137,7 +166,11 @@ export default function WalletClient({
   async function watchAd() {
     if (!initData) return setMessage("Open Joy Wallet inside Telegram first.");
     if (!monetagConfigured || !monetagFunction) {
-      return setMessage("Monetag is not configured yet. Add the TMA SDK tag from Monetag.");
+      return setMessage("Monetag is not configured yet.");
+    }
+
+    if (!monetagReady) {
+      return setMessage("Monetag is still loading. Please try again in a moment.");
     }
 
     setWatching(true);
