@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Script from "next/script";
 import { createClient } from "../lib/supabase/client";
 
 const POINTS_PER_AD = 1;
@@ -10,6 +9,7 @@ const POINTS_FOR_RIDE_CREDIT = 10;
 const POINTS_FOR_FREE_RIDE = 100;
 const POINTS_FOR_FOOD_REWARD = 500;
 const MIN_WITHDRAWAL_KOBO = 50000;
+const DIRECT_LINK_URL = "https://omg10.com/4/11907857";
 
 type FoodReward = {
   id: string;
@@ -76,6 +76,9 @@ export default function WatchAndRidePage() {
 
   async function watchAd() {
     if (!userId) return;
+
+    window.open(DIRECT_LINK_URL, "_blank");
+
     setBusy(true);
     setMessage("");
 
@@ -237,14 +240,6 @@ export default function WatchAndRidePage() {
 
   return (
     <main className="page">
-      <Script
-        id="monetag-popunder"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: "(function(s){s.dataset.zone='11892238',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))",
-        }}
-      />
-
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "24px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
         <Link href="/rider" style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, letterSpacing: "0.02em" }}>
           ← Joy Ride
