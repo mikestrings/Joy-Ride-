@@ -129,14 +129,6 @@ export default function WalletClient({
           setLoading(false);
         });
     } else {
-            loadWallet();
-          }
-        })
-        .catch(() => {
-          setMessage("Unable to connect to Joy Wallet.");
-          setLoading(false);
-        });
-    } else {
       setLoading(false);
       setMessage("Open Joy Wallet from Telegram to continue.");
     }
