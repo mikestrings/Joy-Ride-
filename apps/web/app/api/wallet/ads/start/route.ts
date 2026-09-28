@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { createJoyWalletAdmin } from "@/app/lib/joy-wallet/supabase-admin";
-import { validateTelegramInitData } from "@/app/lib/joy-wallet/telegram";
+import { createJoyWalletAdmin } from "../../../../../lib/joy-wallet/supabase-admin";
+import { validateTelegramInitData } from "../../../../../lib/joy-wallet/telegram";
 
 export async function POST(request: NextRequest) {
   try {
