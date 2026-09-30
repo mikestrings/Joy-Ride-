@@ -56,14 +56,15 @@ function money(kobo: number) {
 export default function WalletClient({
   monetagFunction,
   monetagConfigured,
+  monetagReady,
 }: {
   monetagFunction: string;
   monetagConfigured: boolean;
+  monetagReady: boolean;
 }) {
   const [data, setData] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(true);
   const [watching, setWatching] = useState(false);
-  const [monetagReady, setMonetagReady] = useState(false);
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"home" | "withdraw" | "history">("home");
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -81,34 +82,6 @@ export default function WalletClient({
   }, []);
 
   const initData = tg?.initData ?? "";
-
-  useEffect(() => {
-    if (!monetagConfigured || !monetagFunction) {
-      setMonetagReady(false);
-      return;
-    }
-
-    let attempts = 0;
-
-    const checkMonetag = () => {
-      const fn = (window as unknown as Record<string, unknown>)[monetagFunction];
-
-      if (typeof fn === "function") {
-        setMonetagReady(true);
-        return;
-      }
-
-      attempts += 1;
-
-      if (attempts < 40) {
-        window.setTimeout(checkMonetag, 500);
-      } else {
-        setMonetagReady(false);
-      }
-    };
-
-    checkMonetag();
-  }, [monetagConfigured, monetagFunction]);
 
   const loadWallet = useCallback(async () => {
     if (!initData) {
@@ -169,7 +142,12 @@ export default function WalletClient({
       return setMessage("Monetag is not configured yet.");
     }
 
-    if (!monetagReady) {
+    const sdkCheck =
+      typeof window !== "undefined"
+        ? (window as unknown as Record<string, unknown>)[monetagFunction]
+        : undefined;
+
+    if (!monetagReady && typeof sdkCheck !== "function") {
       return setMessage("Monetag is still loading. Please try again in a moment.");
     }
 
