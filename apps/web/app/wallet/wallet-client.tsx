@@ -147,6 +147,17 @@ export default function WalletClient({
         ? (window as unknown as Record<string, unknown>)[monetagFunction]
         : undefined;
 
+    console.log("MONETAG DIAGNOSTIC", {
+      functionName: monetagFunction,
+      readyState: monetagReady,
+      functionType: typeof sdkCheck,
+      configured: monetagConfigured,
+    });
+
+    setMessage(
+      `Monetag: configured=${String(monetagConfigured)}, ready=${String(monetagReady)}, function=${typeof sdkCheck}`
+    );
+
     if (!monetagReady && typeof sdkCheck !== "function") {
       return setMessage("Monetag is still loading. Please try again in a moment.");
     }
